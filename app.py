@@ -5,24 +5,26 @@ in linear models when p approaches or exceeds n.
 Enhanced version with preset scenarios, explanatory text, and results snapshots.
 """
 
+import base64
+import io
+import json
+import os
+import warnings
+from datetime import datetime
+
 import dash
-from dash import dcc, html, Input, Output, State, callback_context
 import dash_bootstrap_components as dbc
-import plotly.graph_objects as go
-import plotly.express as px
-from plotly.subplots import make_subplots
 import numpy as np
 import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+from dash import Input, Output, State, callback_context, dcc, html
+from plotly.subplots import make_subplots
 from scipy.linalg import cholesky
-from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import LinearRegression, Ridge, Lasso
+from sklearn.linear_model import Lasso, LinearRegression, Ridge
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split
-import warnings
-import json
-import base64
-from datetime import datetime
-import io
+from sklearn.preprocessing import StandardScaler
 
 # Suppress convergence warnings for cleaner output
 warnings.filterwarnings('ignore', category=UserWarning)
@@ -896,4 +898,5 @@ def download_csv(n_clicks):
     )
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=8050)
+    port = int(os.environ.get("PORT", 8050))
+    app.run(debug=True, host='0.0.0.0', port=port)

@@ -1,0 +1,100 @@
+# PROMPT FOR LLM — Bias–Variance Playground (Presets + Explanations + Reproducibility)
+
+You are an expert Python engineer. Extend the earlier “Bias–Variance Playground” (Dash + Plotly) into a **teaching app** that includes:
+
+1) **Preset scenarios** with predefined sliders/technique settings that produce **reproducible** graphs and numbers,  
+2) **Inline explanations** (auto-generated annotations & text) that describe **what** the user is seeing and **why** those values make sense,  
+3) A **Results Snapshot** panel that records the current configuration + metrics so users can compare scenarios side-by-side.
+
+Deliver a single, runnable `app.py`.
+
+---
+
+## 1) Core Features (keep from previous app)
+
+- Controls: `n` (samples), `p` (predictors), `lambda` (log-scaled), `model` (OLS, Ridge, LASSO), `rho` (feature correlation), `sigma` (noise SD), `seed` (int), “Regenerate Data”.
+- Data: generate from \( y = Xeta + arepsilon \) with **sparse** true \(eta\) (first `k_true=min(5,p)` non-zero), multivariate normal \(X\) with Toeplitz covariance \(\Sigma_{ij}=ho^{|i-j|}\).
+- Preprocessing: standardize \(X\) on train only; center \(y\); no intercept in solvers.
+- Metrics: **RMSE** and **R²** on **train** and **test**.
+- Plots: (1) **Error vs λ** (train/test) with vertical marker at current λ; (2) **Coefficient magnitudes** (sorted bars); (3) **Test \(\hat y\) vs \(y\)** scatter with y=x line.
+- Guardrails: OLS warning when \(p \ge n\); graceful handling of LASSO convergence.
+
+---
+
+## 2) NEW: Preset Scenarios (reproducible)
+
+Add a **“Preset Scenarios”** dropdown above the controls with the following options. Selecting a preset **sets all controls** (including seed), triggers recomputation, and displays a short rationale. Use exactly these defaults to ensure reproducibility:
+
+**A. Comfortable OLS (n ≫ p)**  
+{"name":"Comfortable OLS","n":300,"p":20,"model":"OLS","lambda":null,"rho":0.2,"sigma":1.0,"seed":123}
+
+**B. Edge Case (p ≈ n) — OLS vs Ridge**  
+{"name":"Edge (p≈n) OLS","n":120,"p":100,"model":"OLS","lambda":null,"rho":0.5,"sigma":1.2,"seed":456}  
+{"name":"Edge (p≈n) Ridge","n":120,"p":100,"model":"Ridge","lambda":1.0,"rho":0.5,"sigma":1.2,"seed":456}
+
+**C. Underdetermined (p > n) — LASSO rescues**  
+{"name":"Underdetermined LASSO","n":80,"p":200,"model":"LASSO","lambda":0.3,"rho":0.3,"sigma":1.0,"seed":789}
+
+**D. Strongly Correlated Predictors**  
+{"name":"High Correlation Ridge","n":200,"p":60,"model":"Ridge","lambda":3.0,"rho":0.85,"sigma":1.0,"seed":31415}  
+{"name":"High Correlation LASSO","n":200,"p":60,"model":"LASSO","lambda":0.15,"rho":0.85,"sigma":1.0,"seed":31415}
+
+---
+
+## 3) NEW: Explanatory Text & Annotations
+
+Add an **“Explain this view”** section that auto-writes concise, data-driven summaries based on the current state:
+- Bias–Variance summary
+- Coefficient story
+- Scatter interpretation
+
+Also add numeric annotations on plots.
+
+---
+
+## 4) NEW: Preset Rationales
+
+Render specific rationale text for each preset scenario, e.g.:  
+- Comfortable OLS: “Here n >> p … coefficients are stable.”  
+- Edge OLS vs Ridge, Underdetermined LASSO, High Correlation Ridge/LASSO, etc.
+
+---
+
+## 5) NEW: Results Snapshot Panel
+
+Add a right-hand panel with a **“Save Snapshot”** button. Store table rows with timestamp, preset name/custom, config, metrics, and nonzero count. Enable comparison overlays and CSV download.
+
+---
+
+## 6) Reproducibility Requirements
+
+Seed must deterministically control X, β, noise, and split. Preset selection locks seed and yields identical outputs across runs.
+
+---
+
+## 7) Usability Polishing
+
+- Red banner for OLS with p >= n.  
+- Tooltips for bias–variance, λ, ρ.  
+- Debounced callbacks.  
+- Compute time < 500 ms typical.  
+
+---
+
+## 8) Code Structure
+
+Reuse helper functions, add new ones for presets, explanations, snapshots. Use Plotly annotations.
+
+---
+
+## 9) Acceptance Criteria
+
+- Runs with `python app.py`.  
+- Preset selection reproducible across runs.  
+- “Explain this view” uses actual numbers.  
+- Snapshot panel works and CSV downloadable.  
+- Proper warnings and annotations appear.  
+
+---
+
+**Deliverable**: A single `app.py` file implementing all features with clear comments.

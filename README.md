@@ -2,6 +2,8 @@
 
 An interactive Plotly Dash web application that demonstrates how model performance changes when the number of features (p) approaches or exceeds the number of samples (n), and how regularization (Ridge/LASSO) stabilizes out-of-sample error.
 
+[Link here](https://tomtranjr-bias-variance-playground.share.connect.posit.cloud/)
+
 **Enhanced version** with preset scenarios, explanatory text, and results snapshots for educational use.
 
 ## Features
@@ -101,5 +103,3 @@ All preset scenarios use fixed random seeds to ensure reproducible results:
 - Identical train/test splits
 - Consistent coefficient estimates
 - Comparable performance metrics
-
-This makes the app perfect for educational demonstrations and research comparisons.
